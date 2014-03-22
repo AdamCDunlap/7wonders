@@ -2,10 +2,10 @@
 #define ALLCARDS_H
 
 #include <vector>
-#include "Card.h"
+#include "CardType.h"
 
 namespace AllCards {
-    std::vector<Card> getAllCards();
+    std::vector<CardType> getAllCards();
 }
 
 #endif//ALLCARDS_H

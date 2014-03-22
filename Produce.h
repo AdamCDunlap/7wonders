@@ -11,11 +11,11 @@ enum class Produce {
     CLOTH,
     GLASS,
     VP,
-    ANTI_VP,
+    MILITARY_LOSS,
     GEAR,
     COMPASS,
     TABLET,
-    SCIENCE,
+    ANY_SCIENCE,
     COIN,
     SHIELD,
     WOOD_OR_BRICK,
@@ -26,6 +26,9 @@ enum class Produce {
     ORE_OR_STONE,
     RAW_MATERIAL,
     MANUFACTURED_GOOD,
+    LEFT_RAW_CHEAP,
+    RIGHT_RAW_CHEAP,
+    MANUFACTURED_CHEAP,
 };
 
 //bool operator<(const Produce& lhs, const Produce& rhs) {

@@ -19,6 +19,8 @@ public:
     void takeTurn();
     void giveHand(std::list<Card>* hand);
     std::string getName() const { return name_; }
+    const Player* getLeftPlayer() const { return leftPlayer_; }
+    const Player* getRightPlayer() const { return rightPlayer_; }
 private:
     const std::string name_;
     std::vector<Card> cards_;

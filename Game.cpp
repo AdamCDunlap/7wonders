@@ -59,7 +59,7 @@ void Game::play() {
     for (const Player& p : players_) {
         const vector<Produce> finalProduce = p.getProduce();
         int points = std::count(finalProduce.begin(), finalProduce.end(), Produce::VP)
-                   - std::count(finalProduce.begin(), finalProduce.end(), Produce::ANTI_VP);
+                   - std::count(finalProduce.begin(), finalProduce.end(), Produce::MILITARY_LOSS);
         cout << p << " got " << points << " points!" << endl;
         if (points == winningPoints) {
             winners.push_back(&p);

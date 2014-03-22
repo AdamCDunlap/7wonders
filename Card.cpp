@@ -3,40 +3,18 @@
 using namespace std;
 
 Card::Card(const string name,
-           age,
-           vector<size_t> players,
            Color color,
            const vector<Produce> cost,
-           const string chainName,
+           const vector<string> chainNames,
            const function<vector<Produce> (const Player& p)> getProduce)
     : name_{name},
-      age_{age},
-      players_{players},
       color_{color},
       cost_{cost},
-      chainName_{chainName},
+      chainNames_{chainNames},
       getProduce_{getProduce}
     {
     
 }
-
-//Card& Card::operator=(const Card& c) {
-//    if (this != &c) {
-//        name_ = c.name_;
-//        cost_ = c.cost_;
-//        chainName_ = c.chainName_;
-//        getProduce_ = c.getProduce_;
-//    }
-//    return *this;
-//}
-
-//int Card::getVP() {
-//    vector<Produce> produce = getProduce_();
-//    vector<Produce> VPs;
-//    copy_if(produce.begin(), produce.end(), VPs.begin(), 
-//        [](const Produce& p) { return p == Produce::VP; });
-//    return VPs.size();
-//}
 
  vector<Produce> Card::getProduce(const Player& p) const {
     return getProduce_(p);
@@ -46,8 +24,13 @@ Pay Card::canPlay(const Player& player) const {
 
     // First, check for chains
     vector<Card> cards = player.getCards();
-    if (any_of(cards.begin(), cards.end(),
-            [this](const Card& c) { return c.getName() == chainName_; })) {
+    //if (any_of(cards.begin(), cards.end(),
+    //        [this](const Card& c) { return c.getName() == chainName_; })) {
+
+    // if any of the cards match any of our chain names
+    if(std::find_first_of(cards.begin(), cards.end(), chainNames_.begin(), chainNames_.end(),
+           [](const Card& c, const string& n){return c.getName() == n;}
+        ) != cards.end()) {
         return Pay{0,0,0};
     }
 
@@ -73,6 +56,7 @@ Pay Card::canPlay(const Player& player) const {
         return Pay{0, 0, 0};
     }
 
+    // TODO: Buy resources
     return Pay{-1, -1, -1};
 }
 

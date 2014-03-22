@@ -10,11 +10,11 @@ std::ostream& operator<< (std::ostream& o, const Produce& p) {
     case Produce::CLOTH: o << "CLOTH"; break;
     case Produce::GLASS: o << "GLASS"; break;
     case Produce::VP: o << "VP"; break;
-    case Produce::ANTI_VP: o << "ANTI_VP"; break;
+    case Produce::MILITARY_LOSS: o << "MILITARY_LOSS"; break;
     case Produce::GEAR: o << "GEAR"; break;
     case Produce::COMPASS: o << "COMPASS"; break;
     case Produce::TABLET: o << "TABLET"; break;
-    case Produce::SCIENCE: o << "SCIENCE"; break;
+    case Produce::ANY_SCIENCE: o << "ANY_SCIENCE"; break;
     case Produce::COIN: o << "COIN"; break;
     case Produce::SHIELD: o << "SHIELD"; break;
     case Produce::WOOD_OR_BRICK: o << "WOOD_OR_BRICK"; break;
@@ -25,6 +25,9 @@ std::ostream& operator<< (std::ostream& o, const Produce& p) {
     case Produce::ORE_OR_STONE: o << "ORE_OR_STONE"; break;
     case Produce::RAW_MATERIAL: o << "RAW_MATERIAL"; break;
     case Produce::MANUFACTURED_GOOD: o << "MANUFACTURED_GOOD"; break;
+    case Produce::LEFT_RAW_CHEAP: o << "LEFT_RAW_CHEAP"; break;
+    case Produce::RIGHT_RAW_CHEAP: o << "RIGHT_RAW_CHEAP"; break;
+    case Produce::MANUFACTURED_CHEAP: o << "MANUFACTURED_CHEAP"; break;
     }
     return o;
 }

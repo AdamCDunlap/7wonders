@@ -2,6 +2,7 @@
 #define DECK_H
 #include <vector>
 #include "Card.h"
+#include "CardType.h"
 
 namespace Deck {
     std::vector< std::vector<Card> > getDeck(size_t numPlayers);

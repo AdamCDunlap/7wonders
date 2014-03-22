@@ -5,6 +5,7 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
+    srand(time(0));
     vector<string> names(argv + 1, argv + argc);
     if (names.empty()) {
         names.push_back("Adam");

@@ -9,6 +9,7 @@ enum class Color {
     RED,
     GREEN,
     PURPLE,
+    NO_COLOR,
 };
 
 #endif//COLOR_H

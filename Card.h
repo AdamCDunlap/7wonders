@@ -22,8 +22,8 @@ public:
     // Returns what the card gives the given player
     std::vector<Produce> getProduce(const Player& p) const;
 
-    // Returns if this card can be played for given player
-    Pay canPlay(const Player& p) const;
+    // Returns all possible options for paying for card
+    std::vector<Pay> canPlay(const Player& p) const;
  
     // Accessors
     std::string getName() const { return name_; }

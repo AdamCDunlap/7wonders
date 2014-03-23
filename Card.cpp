@@ -20,7 +20,7 @@ Card::Card(const string name,
     return getProduce_(p);
 }
 
-Pay Card::canPlay(const Player& player) const {
+vector<Pay> Card::canPlay(const Player& player) const {
 
     // First, check for chains
     vector<Card> cards = player.getCards();
@@ -31,33 +31,68 @@ Pay Card::canPlay(const Player& player) const {
     if(std::find_first_of(cards.begin(), cards.end(), chainNames_.begin(), chainNames_.end(),
            [](const Card& c, const string& n){return c.getName() == n;}
         ) != cards.end()) {
-        return Pay{0,0,0};
+        return vector<Pay>{Pay{0,0,0}};
     }
+
+    Pay coins{0,0,0};
+    //cout << endl << "Coins: " << coins << endl;
 
     // Make two lists of what we need and what we have, and remove matching
     // elements.
     vector<Produce> toBePaid = cost_;
     vector<Produce> stillHave = player.getProduce();
-    // Sort them
-    //sort(toBePaid.begin(), toBePaid.end());
-    //sort(stillHave.begin(), stillHaver.end());
-    //// Take the set difference to remove all the resources we have
-    //set_difference(
+    {
+        // Remove all the coins and count them
+        auto newEnd = std::remove(toBePaid.begin(), toBePaid.end(), Produce::COIN);
+        coins.bank += std::distance(newEnd, toBePaid.end()); // How many coins were removed
+        toBePaid.erase(newEnd, toBePaid.end());
+    }
     
-    for (auto i = toBePaid.begin(), end = toBePaid.end(); i != end; ++i) {
-        auto pos = find(stillHave.begin(), stillHave.end(), *i);
-        if (pos != stillHave.end()) {
-            stillHave.erase(pos);
-            toBePaid.erase(i);
+    // Go through our resources
+    // First remove all the ones we don't need
+    // Then remove all the ones where we need exactly one of the resources
+    // Then remove all where we need two, along with one of the two (it doesn't matter which)
+    // Then etc until they're all gone
+    for (size_t neededResourcesTarget=0; !(stillHave.empty() || toBePaid.empty());) {
+        bool recalc = false;
+        //cout << "NeededResourceTarget: " << neededResourcesTarget << endl;
+        for (auto ownedIt = stillHave.begin(); ownedIt != stillHave.end();) {
+            //cout << "Trying to use: " << *ownedIt << endl;
+            vector<Produce> simpleResources = simplify(*ownedIt);
+            decltype(toBePaid.begin()) neededPos = toBePaid.end();
+            size_t neededResources = 0;
+            for (const Produce& p : simpleResources) {
+                auto pos = find(toBePaid.begin(), toBePaid.end(), p);
+                if(pos != toBePaid.end()) {
+                    ++neededResources;
+                    neededPos = pos;
+                }
+            }
+            if (neededResources == neededResourcesTarget) {
+                stillHave.erase(ownedIt);
+                if (neededPos != toBePaid.end()) toBePaid.erase(neededPos);
+                // Now recalculate everything
+                neededResourcesTarget = 0;
+                recalc = true;
+                break;
+            }
+            else {
+                ++ownedIt;
+            }
+        }
+        if (!recalc) {
+            ++neededResourcesTarget;
         }
     }
-    // TODO: Deal with OR resources
+
+
+    //cout << "Coins: " << coins << endl;
     if (toBePaid.empty()) {
-        return Pay{0, 0, 0};
+        return vector<Pay>{coins};
     }
 
     // TODO: Buy resources
-    return Pay{-1, -1, -1};
+    return vector<Pay>{}; // No options
 }
 
 std::ostream& operator<< (std::ostream& o, const Card& c) {

@@ -45,11 +45,11 @@ vector< vector<Card> > Deck::getDeck(size_t numPlayers) {
     //std::copy(guilds.begin(), guilds.begin() + numGuilds, back_inserter(deck[2]));
 
     //cout << "Should be all done!" << endl;
-    for( auto i = deck.begin(); i != deck.end(); ++i) {
-        copy(i->begin(), i->end(), ostream_iterator<Card>(cout, ", "));
-        cout << "::::: ";
-    }
-    cout << endl;
+    //for( auto i = deck.begin(); i != deck.end(); ++i) {
+    //    copy(i->begin(), i->end(), ostream_iterator<Card>(cout, ", "));
+    //    cout << "::::: ";
+    //}
+    //cout << endl;
     for (size_t i=0; i<3; ++i) {
         assert(deck[i].size() == cardsPerAge);
     }

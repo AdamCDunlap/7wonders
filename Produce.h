@@ -1,6 +1,7 @@
 #ifndef PRODUCE_H
 #define PRODUCE_H
 #include <iostream>
+#include <vector>
 
 enum class Produce {
     WOOD,
@@ -30,6 +31,8 @@ enum class Produce {
     RIGHT_RAW_CHEAP,
     MANUFACTURED_CHEAP,
 };
+
+std::vector<Produce> simplify(const Produce& p);
 
 //bool operator<(const Produce& lhs, const Produce& rhs) {
 //    return static_cast<int>(lhs) < static_cast<int>(rhs);

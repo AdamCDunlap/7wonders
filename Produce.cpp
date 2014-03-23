@@ -33,3 +33,18 @@ std::ostream& operator<< (std::ostream& o, const Produce& p) {
 }
 
 // o    case Produce::WOOD: o << "WOOD"; break;21k^"nyw21j:s/WOOD//g
+
+std::vector<Produce> simplify(const Produce& p) {
+    switch(p) {
+    case Produce::ANY_SCIENCE:       return std::vector<Produce>{Produce::GEAR,  Produce::COMPASS, Produce::TABLET};
+    case Produce::WOOD_OR_BRICK:     return std::vector<Produce>{Produce::WOOD,  Produce::BRICK};
+    case Produce::STONE_OR_BRICK:    return std::vector<Produce>{Produce::STONE, Produce::BRICK};
+    case Produce::BRICK_OR_ORE:      return std::vector<Produce>{Produce::BRICK, Produce::ORE};
+    case Produce::STONE_OR_WOOD:     return std::vector<Produce>{Produce::STONE, Produce::WOOD};
+    case Produce::WOOD_OR_ORE:       return std::vector<Produce>{Produce::WOOD,  Produce::ORE};
+    case Produce::ORE_OR_STONE:      return std::vector<Produce>{Produce::ORE,   Produce::STONE};
+    case Produce::RAW_MATERIAL:      return std::vector<Produce>{Produce::WOOD,  Produce::STONE, Produce::ORE, Produce::BRICK};
+    case Produce::MANUFACTURED_GOOD: return std::vector<Produce>{Produce::PAPER, Produce::CLOTH, Produce::GLASS};
+    default: return std::vector<Produce>{p};
+    }
+}

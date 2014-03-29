@@ -10,7 +10,6 @@ std::ostream& operator<< (std::ostream& o, const Produce& p) {
     case Produce::CLOTH: o << "CLOTH"; break;
     case Produce::GLASS: o << "GLASS"; break;
     case Produce::VP: o << "VP"; break;
-    case Produce::MILITARY_LOSS: o << "MILITARY_LOSS"; break;
     case Produce::GEAR: o << "GEAR"; break;
     case Produce::COMPASS: o << "COMPASS"; break;
     case Produce::TABLET: o << "TABLET"; break;

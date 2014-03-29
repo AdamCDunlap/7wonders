@@ -34,10 +34,6 @@ public:
          std::vector<std::string> chainNames,
          std::function<std::vector<Produce> (const Player& p)> produce);
 
-    //CardType() :
-    //    CardType{"", 0, std::vector<size_t>{}, Color::NO_COLOR, std::vector<Produce>{}, std::vector<std::string>{}, std::vector<Produce>{}}
-    //{}
-
     // Accessors
     std::string getName() const { return name_; }
     size_t getAge() const { return age_; };

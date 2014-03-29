@@ -12,7 +12,6 @@ enum class Produce {
     CLOTH,
     GLASS,
     VP,
-    MILITARY_LOSS,
     GEAR,
     COMPASS,
     TABLET,

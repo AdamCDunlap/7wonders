@@ -2,10 +2,13 @@
 #include "infix_iterator.h"
 #include <iostream>
 #include <iterator>
+#include <cassert>
 using namespace std;
 
 Player::Player(string name) :
     name_{name},
+    militaryWinPts_{0},
+    militaryLosses_{0},
     leftPlayer_{nullptr},
     rightPlayer_{nullptr},
     coins_{3} // Start with 3 coins
@@ -92,6 +95,11 @@ void Player::takeTurn() {
         }
 
         if (cardNum > hand_->size()) { // We're doing a special action, so ask what card
+            enum class Action { BURY, BURN } action;
+            if (cardNum == hand_->size() + 1)      action = Action::BURY;
+            else if (cardNum == hand_->size() + 2) action = Action::BURN;
+            else assert(false);
+            
             cardNum = 0;
             cout << "Which card?" << endl;
             while(cardNum <= 0 || cardNum > hand_->size()) {
@@ -99,12 +107,19 @@ void Player::takeTurn() {
             }
             advance(cardIt, cardNum-1);
 
-            if (cardNum == hand_->size() + 1) { // Bury
+            cout << "CardNum is " << cardNum << endl;
+            switch(action) {
+            case Action::BURY:
                 // TODO: Figure out if burying is possible
                 moveMade = true;
-            } else {
+                break;
+            case Action::BURN:
                 coins_ += 3;
                 moveMade = true;
+                break;
+            default:
+                assert(false);
+                break;
             }
         } else { // Play the card
             advance(cardIt, cardNum-1);
@@ -116,7 +131,7 @@ void Player::takeTurn() {
                 cout << "You can't play that" << endl;
             } else if (payPossibilities[0] == Pay{0,0,0}) {
                 // It's free! Play it! 
-                cards_.push_back(*cardIt);
+                play_card(*cardIt);
                 moveMade = true;
             } else {
                 // Ask which option to do or none
@@ -138,7 +153,7 @@ void Player::takeTurn() {
                     coins_ -= pay.getTotal();
                     leftPlayer_->giveCoins(pay.left);
                     rightPlayer_->giveCoins(pay.right);
-                    cards_.push_back(*cardIt);
+                    play_card(*cardIt);
                     moveMade = true; // Sucessful card played!
                 }
                 else {
@@ -155,6 +170,14 @@ void Player::takeTurn() {
 
 void Player::giveHand(list<Card>* hand) {
     hand_ = hand;
+}
+
+void Player::play_card(const Card& c) {
+
+    // Count all the coins
+    vector<Produce> produce = c.getProduce(*this);
+    coins_ += std::count(produce.begin(), produce.end(), Produce::COIN);
+    cards_.push_back(c);
 }
 
 std::ostream& operator<< (std::ostream& o, const Player& p) {
@@ -181,4 +204,49 @@ std::ostream& operator<< (std::ostream& o, const Player& p) {
     ////copy(produce.begin(), produce.end(), ostream_iterator<Produce>(o, ", "));
     //o << "End of Player" << endl;
     return o;
+}
+
+
+
+vector<Produce> cancelResources(const Player& player, vector<Produce> toBePaid) {
+
+    // Go through our resources
+    // First remove all the ones we don't need
+    // Then remove all the ones where we need exactly one of the resources
+    // Then remove all where we need two, along with one of the two (it doesn't matter which)
+    // Then etc until they're all gone
+    vector<Produce> stillHave = player.getProduce();
+    for (size_t neededResourcesTarget=0; !(stillHave.empty() || toBePaid.empty());) {
+        bool recalc = false;
+        //cout << "NeededResourceTarget: " << neededResourcesTarget << endl;
+        for (auto ownedIt = stillHave.begin(); ownedIt != stillHave.end();) {
+            //cout << "Trying to use: " << *ownedIt << endl;
+            vector<Produce> simpleResources = simplify(*ownedIt);
+            auto neededPos = toBePaid.end();
+            size_t neededResources = 0;
+            for (const Produce& p : simpleResources) {
+                auto pos = find(toBePaid.begin(), toBePaid.end(), p);
+                if(pos != toBePaid.end()) {
+                    ++neededResources;
+                    neededPos = pos;
+                }
+            }
+            if (neededResources == neededResourcesTarget) {
+                stillHave.erase(ownedIt);
+                if (neededPos != toBePaid.end()) toBePaid.erase(neededPos);
+                // Now recalculate everything
+                recalc = true;
+                break;
+            }
+            else {
+                ++ownedIt;
+            }
+        }
+        if (recalc) {
+            neededResourcesTarget = 0;
+        } else {
+            ++neededResourcesTarget;
+        }
+    }
+    return toBePaid;
 }

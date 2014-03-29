@@ -21,7 +21,7 @@ std::vector<CardType> AllCards::getAllCards() {
         Color::BROWN,
         vector<Produce>{},
         vector<string>{},
-        vector<Produce>{Produce::ORE}
+        vector<Produce>{Produce::STONE}
     });
     cards.push_back(CardType{
         "Clay Pool",
@@ -39,7 +39,7 @@ std::vector<CardType> AllCards::getAllCards() {
         Color::BROWN,
         vector<Produce>{},
         vector<string>{},
-        vector<Produce>{Produce::WOOD}
+        vector<Produce>{Produce::ORE}
     });
     cards.push_back(CardType{
         "Tree Farm",
@@ -123,7 +123,7 @@ std::vector<CardType> AllCards::getAllCards() {
         Color::BROWN,
         vector<Produce>{Produce::COIN},
         vector<string>{},
-        vector<Produce>{Produce::ORE, Produce::ORE}
+        vector<Produce>{Produce::BRICK, Produce::BRICK}
     });
     cards.push_back(CardType{
         "Foundry",
@@ -438,7 +438,7 @@ std::vector<CardType> AllCards::getAllCards() {
         vector<Produce>{Produce::GEAR}
     });
     cards.push_back(CardType{
-        "Workshop",
+        "Scriptorium",
         1,
         vector<size_t>{3, 4},
         Color::GREEN,
@@ -771,11 +771,7 @@ std::vector<CardType> AllCards::getAllCards() {
         vector<Produce>{Produce::ORE, Produce::ORE, Produce::STONE, Produce::CLOTH},
         vector<string>{},
         [](const Player& p){
-            vector<Produce> leftProduce = p.getLeftPlayer()->getProduce(),
-                            rightProduce = p.getRightPlayer()->getProduce();
-            size_t numLosses = 0;
-            numLosses += std::count_if(leftProduce.begin(), leftProduce.end(), [](const Produce& p){ return p == Produce::MILITARY_LOSS; });
-            numLosses += std::count_if(rightProduce.begin(), rightProduce.end(), [](const Produce& p){ return p == Produce::MILITARY_LOSS; });
+            size_t numLosses = p.getLeftPlayer()->getMilitaryLosses() + p.getRightPlayer()->getMilitaryLosses();
             return vector<Produce>(numLosses, Produce::VP);
         }
     });

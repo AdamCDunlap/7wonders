@@ -20,13 +20,42 @@ Card::Card(const string name,
     return getProduce_(p);
 }
 
+template<typename T>
+static vector< vector< vector<T> > > splitIntoTwo(typename vector<T>::const_iterator begin, typename vector<T>::const_iterator end) {
+    // Start with one option: two empty paritions
+    vector< vector< vector<T> > > ret{ vector< vector<T> >{vector<T>{}, vector<T>{}} };
+    if (begin != end) {
+        // outer: list of ways to do it
+        // middle: two sides
+        // inner: produce in each side
+        //
+        // for each in outer
+        // add two to new, one with it in the first and one with it in the second
+        
+        const vector< vector< vector<T> > > payRest = splitIntoTwo<T>(begin+1, end);
+        for(vector< vector<T> > payRight : payRest) {
+            vector< vector<T> > payLeft = payRight;
+            payRight[0].push_back(*begin);
+            payLeft[1].push_back(*begin);
+            ret.push_back(payRight);
+            ret.push_back(payLeft);
+        }
+    }
+    return ret;
+}
+
 vector<Pay> Card::canPlay(const Player& player) const {
 
-    // First, check for chains
     vector<Card> cards = player.getCards();
-    //if (any_of(cards.begin(), cards.end(),
-    //        [this](const Card& c) { return c.getName() == chainName_; })) {
+    // Make sure player doesn't already have this card
+    
+    if (any_of(cards.begin(), cards.end(),
+            [this](const Card& c) { return c.getName() == name_; })) {
+        // If player already has card of the same name, we can't play it
+        return vector<Pay>{};
+    }
 
+    // Check for chains
     // if any of the cards match any of our chain names
     if(std::find_first_of(cards.begin(), cards.end(), chainNames_.begin(), chainNames_.end(),
            [](const Card& c, const string& n){return c.getName() == n;}
@@ -34,64 +63,50 @@ vector<Pay> Card::canPlay(const Player& player) const {
         return vector<Pay>{Pay{0,0,0}};
     }
 
-    Pay coins{0,0,0};
+    size_t coinsToBank = 0;
     //cout << endl << "Coins: " << coins << endl;
 
     // Make two lists of what we need and what we have, and remove matching
     // elements.
     vector<Produce> toBePaid = cost_;
-    vector<Produce> stillHave = player.getProduce();
     {
         // Remove all the coins and count them
         auto newEnd = std::remove(toBePaid.begin(), toBePaid.end(), Produce::COIN);
-        coins.bank += std::distance(newEnd, toBePaid.end()); // How many coins were removed
+        coinsToBank += std::distance(newEnd, toBePaid.end()); // How many coins were removed
         toBePaid.erase(newEnd, toBePaid.end());
     }
     
-    // Go through our resources
-    // First remove all the ones we don't need
-    // Then remove all the ones where we need exactly one of the resources
-    // Then remove all where we need two, along with one of the two (it doesn't matter which)
-    // Then etc until they're all gone
-    for (size_t neededResourcesTarget=0; !(stillHave.empty() || toBePaid.empty());) {
-        bool recalc = false;
-        //cout << "NeededResourceTarget: " << neededResourcesTarget << endl;
-        for (auto ownedIt = stillHave.begin(); ownedIt != stillHave.end();) {
-            //cout << "Trying to use: " << *ownedIt << endl;
-            vector<Produce> simpleResources = simplify(*ownedIt);
-            decltype(toBePaid.begin()) neededPos = toBePaid.end();
-            size_t neededResources = 0;
-            for (const Produce& p : simpleResources) {
-                auto pos = find(toBePaid.begin(), toBePaid.end(), p);
-                if(pos != toBePaid.end()) {
-                    ++neededResources;
-                    neededPos = pos;
-                }
-            }
-            if (neededResources == neededResourcesTarget) {
-                stillHave.erase(ownedIt);
-                if (neededPos != toBePaid.end()) toBePaid.erase(neededPos);
-                // Now recalculate everything
-                neededResourcesTarget = 0;
-                recalc = true;
-                break;
-            }
-            else {
-                ++ownedIt;
-            }
-        }
-        if (!recalc) {
-            ++neededResourcesTarget;
-        }
-    }
+    toBePaid = cancelResources(player, toBePaid);
 
+    vector<Pay> payPossibilities;
 
-    //cout << "Coins: " << coins << endl;
     if (toBePaid.empty()) {
-        return vector<Pay>{coins};
+        payPossibilities.push_back(Pay{0,0,0});
+    } else {
+        
+        vector< vector< vector<Produce> > > waysToSplit = splitIntoTwo<Produce>(toBePaid.cbegin(), toBePaid.cend());
+        for (const vector< vector<Produce> >& wayToSplit : waysToSplit) {
+            
+        }
+        
+        vector<Produce> ourProduce = player.getProduce();
+        if (std::find(ourProduce.begin(), ourProduce.end(), Produce::LEFT_RAW_CHEAP) != ourProduce.end()) {
+        }
+    }
+    
+    // Get rid of possibilities that are too expensive
+    payPossibilities.erase(remove_if(payPossibilities.begin(), payPossibilities.end(),
+            [player](const Pay& p) { return p.getTotal() > player.getCoins(); }),
+        payPossibilities.end());
+
+    // If we've paid for everything, YAY
+    if (toBePaid.empty()) {
+        for (Pay& p : payPossibilities) {
+            p.bank += coinsToBank;
+        }
+        return payPossibilities;
     }
 
-    // TODO: Buy resources
     return vector<Pay>{}; // No options
 }
 

@@ -29,7 +29,6 @@ Game::Game(vector<string> names) {
 }
 
 void Game::play() {
-    srand ( unsigned ( std::time(0) ) );
     for (int age = 0; age < 3; ++age) {
 
         // Make the hands for this age 
@@ -51,6 +50,24 @@ void Game::play() {
                 players_[playerNo].takeTurn();
             }
         }
+
+        // Military time
+        for (Player& p : players_) {
+            const vector<Produce> thisProduce  = p.getProduce();
+            const vector< vector<Produce> > sideProduce{
+                                  p.getLeftPlayer() ->getProduce(),
+                                  p.getRightPlayer()->getProduce()};
+            size_t thisMilitary  = std::count(thisProduce.begin(),  thisProduce.end(),  Produce::SHIELD);
+            for (const vector<Produce>& s : sideProduce) {
+                int militaryDiff = thisMilitary - std::count(s.begin(), s.end(), Produce::SHIELD);
+                if (militaryDiff > 0) {
+                    // We won!
+                    p.militaryWin(2 * age + 1);
+                } else if (militaryDiff < 0) {
+                    p.militaryLoss();
+                }
+            }
+        }
     }
 
     // Count up the points and determine a winner
@@ -58,8 +75,14 @@ void Game::play() {
     vector<const Player*> winners;
     for (const Player& p : players_) {
         const vector<Produce> finalProduce = p.getProduce();
+        size_t gears     = std::count(finalProduce.begin(), finalProduce.end(), Produce::GEAR),
+               tablets   = std::count(finalProduce.begin(), finalProduce.end(), Produce::TABLET),
+               compasses = std::count(finalProduce.begin(), finalProduce.end(), Produce::COMPASS);
+        size_t sciencePts = std::min({gears, tablets, compasses})*7 + gears*gears + tablets*tablets + compasses*compasses;
         int points = std::count(finalProduce.begin(), finalProduce.end(), Produce::VP)
-                   - std::count(finalProduce.begin(), finalProduce.end(), Produce::MILITARY_LOSS);
+                     + p.getMilitaryPts()
+                     + p.getCoins() / 3
+                     + sciencePts;
         cout << p << " got " << points << " points!" << endl;
         if (points == winningPoints) {
             winners.push_back(&p);

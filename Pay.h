@@ -6,7 +6,7 @@ struct Pay {
     size_t bank;
     size_t left;
     size_t right;
-    size_t getTotal() { return bank + left + right; }
+    size_t getTotal() const { return bank + left + right; }
 };
 
 bool operator==(const Pay& p1, const Pay& p2);

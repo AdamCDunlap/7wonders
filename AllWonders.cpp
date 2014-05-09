@@ -4,8 +4,8 @@
 using namespace std;
 
 // Define helper conversion from vector to functional
-static function< vector<Produce> (const Wonder& w, const Player&) > v2f(vector<Produce> v) {
-    return [v](const Wonder&, const Player&) { return v; };
+static function< vector<Produce> (const Player&) > v2f(vector<Produce> v) {
+    return [v](const Player&) { return v; };
 }
 
 std::vector<Wonder> AllWonders::getAllWonders() {
@@ -45,7 +45,7 @@ std::vector<Wonder> AllWonders::getAllWonders() {
           { {Produce::WOOD, Produce::WOOD}, {Produce::STONE, Produce::STONE}, {Produce::CLOTH, Produce::ORE, Produce::ORE} } },
         { { v2f({Produce::WOOD}), v2f({Produce::VP, Produce::VP, Produce::VP}), v2f({Produce::FREE_STRUCTURE}), v2f({Produce::VP, Produce::VP, Produce::VP, Produce::VP, Produce::VP, Produce::VP, Produce::VP})},
           { v2f({Produce::WOOD}), v2f({Produce::LEFT_RAW_CHEAP, Produce::RIGHT_RAW_CHEAP}), v2f({Produce::VP, Produce::VP, Produce::VP, Produce::VP, Produce::VP}), 
-            [](const Wonder&, const Player& p){
+            [](const Player& p){
                 // Return a number of VP equal to the highest that would be gotten from the purple cards on either side
                 size_t most_points = 0;
                 for (const Card& c : p.getLeftPlayer()->getCards()) {
@@ -63,18 +63,13 @@ std::vector<Wonder> AllWonders::getAllWonders() {
                 return vector<Produce>(most_points, Produce::VP);
             }}}
     });
-    auto halicarnassusPower = [](const Wonder& w){if(w.powerUsed()) return Produce::FROM_DISCARD_USED; else return Produce::FROM_DISCARD;};
     wonders.push_back(Wonder{
         "The Mausoleum of Halicarnassus",
         { { {Produce::BRICK, Produce::BRICK}, {Produce::ORE, Produce::ORE, Produce::ORE}, {Produce::CLOTH, Produce::CLOTH} },
           { {Produce::ORE, Produce::ORE}, {Produce::BRICK, Produce::BRICK, Produce::BRICK}, {Produce::GLASS, Produce::PAPER, Produce::CLOTH} } },
         { { v2f({Produce::CLOTH}), v2f({Produce::VP, Produce::VP, Produce::VP}),
-            [&halicarnassusPower](const Wonder& w, const Player&){return vector<Produce>{halicarnassusPower(w)};},
-            v2f({Produce::VP, Produce::VP, Produce::VP, Produce::VP, Produce::VP, Produce::VP, Produce::VP})},
-          { v2f({Produce::CLOTH}),
-            [&halicarnassusPower](const Wonder& w, const Player&){return vector<Produce>{Produce::VP, Produce::VP, halicarnassusPower(w)};},
-            [&halicarnassusPower](const Wonder& w, const Player&){return vector<Produce>{Produce::VP, halicarnassusPower(w)};},
-            [&halicarnassusPower](const Wonder& w, const Player&){return vector<Produce>{halicarnassusPower(w)};}}}
+            v2f({Produce::FROM_DISCARD}), v2f({Produce::VP, Produce::VP, Produce::VP, Produce::VP, Produce::VP, Produce::VP, Produce::VP})},
+          { v2f({Produce::CLOTH}), v2f({Produce::VP, Produce::VP, Produce::FROM_DISCARD}), v2f({Produce::VP, Produce::FROM_DISCARD}), v2f({Produce::FROM_DISCARD})}}
     });
     wonders.push_back(Wonder{
         "The Pyramids of Giza",

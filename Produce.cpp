@@ -28,9 +28,7 @@ std::ostream& operator<< (std::ostream& o, const Produce& p) {
     case Produce::RIGHT_RAW_CHEAP: o << "RIGHT_RAW_CHEAP"; break;
     case Produce::MANUFACTURED_CHEAP: o << "MANUFACTURED_CHEAP"; break;
     case Produce::FREE_STRUCTURE: o << "FREE_STRUCTURE"; break;
-    case Produce::FREE_STRUCTURE_USED: o << "FREE_STRUCTURE_USED"; break;
     case Produce::FROM_DISCARD: o << "FROM_DISCARD"; break;
-    case Produce::FROM_DISCARD_USED: o << "FROM_DISCARD_USED"; break;
     case Produce::BUILD_SEVENTH: o << "BUILD_SEVENTH"; break;
     }
     return o;

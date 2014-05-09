@@ -24,6 +24,7 @@ public:
 
     void takeTurn();
     void postTurn(); // Called after everyone has played a card
+    void postAge(); // Called after the age is done
     void giveHand(std::list<Card>* hand);
     void giveCoins(size_t numCoins);
 
@@ -44,8 +45,8 @@ public:
 private:
 
     // Takes the coins for playing the card and adds it to list of cards
-    void play_card(const Card& c);
-    bool selectPayment(const Card& card, std::vector<Pay> payPossibilities);
+    void playCard(const Card& c);
+    bool selectPayment(const Card& card, std::vector<Pay> payPossibilities, bool canUseFreeBuild);
 
     const std::string name_;
     Wonder wonder_;
@@ -59,6 +60,7 @@ private:
     size_t coins_;
 
     bool playFromDiscard_;
+    bool usedFreeBuild_;
 };
 
 std::ostream& operator<< (std::ostream& o, const Player& player);

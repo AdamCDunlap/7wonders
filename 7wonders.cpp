@@ -3,6 +3,7 @@
 #include <vector>
 #include "Game.h"
 #include "optionparser.h"
+#include "Utility.h"
 using namespace std;
 
 struct Arg: public option::Arg
@@ -43,8 +44,9 @@ const option::Descriptor usage[] =
 };
 
 int main(int argc, char* argv[]) {
-
-    argc-=(argc>0); argv+=(argc>0); // skip program name argv[0] if present
+    // Skip program name
+    --argc;
+    ++argv;
     option::Stats  stats(usage, argc, argv);
     option::Option* options = new option::Option[stats.options_max];
     option::Option* buffer  = new option::Option[stats.buffer_max];
@@ -71,6 +73,8 @@ int main(int argc, char* argv[]) {
         } else {
             srand_val = 0;
         }
+        --argc;
+        ++argv;
     }
     srand(srand_val);
     cout << "Seed: " << srand_val << endl;
@@ -81,6 +85,7 @@ int main(int argc, char* argv[]) {
         names.push_back("Kira");
         names.push_back("Annaliese");
     }
+    cout << names << endl;
     Game gm{names};
     gm.play();
 

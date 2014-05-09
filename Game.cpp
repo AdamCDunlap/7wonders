@@ -73,6 +73,9 @@ void Game::play() {
             }
             //cout << "Discard pile: " << discard_ << endl;
         }
+        for (size_t playerNo = 0; playerNo < players_.size(); ++playerNo) {
+            players_[playerNo].postAge();
+        }
 
         // Military time
         for (Player& p : players_) {

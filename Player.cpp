@@ -14,7 +14,8 @@ Player::Player(string name) :
     leftPlayer_{nullptr},
     rightPlayer_{nullptr},
     coins_{3}, // Start with 3 coins
-    playFromDiscard_{false}
+    playFromDiscard_{false},
+    usedFreeBuild_{false}
 {
     // cards_ will eventualy contain 18 elements, so let's reserve that much
     // space in the vector
@@ -179,7 +180,7 @@ void Player::takeTurn() {
                 vector<Produce> cost = wonder_.getCost();
 
                 vector<Pay> payPossibilities = payForResources(*this, cost);
-                moveMade = selectPayment(*cardIt, payPossibilities);
+                moveMade = selectPayment(*cardIt, payPossibilities, false);
                 if (moveMade) {
                     wonder_.build();
                 }
@@ -199,7 +200,7 @@ void Player::takeTurn() {
 
             // Can we?
             vector<Pay> payPossibilities = cardIt->canPlay(*this);
-            moveMade = selectPayment(*cardIt, payPossibilities);
+            moveMade = selectPayment(*cardIt, payPossibilities, true);
         }
     }
 
@@ -219,8 +220,9 @@ void Player::takeTurn() {
 }
 
 void Player::postTurn() {
-    vector<Produce> produce = getProduce();
-    if (std::find(produce.begin(), produce.end(), Produce::FROM_DISCARD) != produce.end()) {
+    if (playFromDiscard_) {
+        playFromDiscard_ = false; // Only get to do it once
+
         cout << endl << endl << endl << endl;
         cout << "Name: " << getName() << endl;
         cout << "Wonder: " << wonder_ << endl;
@@ -231,39 +233,46 @@ void Player::postTurn() {
         cout << cards_ << endl;
         cout << getProduce() << endl;
 
-        // Print out hand
-        cout << "You want to play: " << endl;
-        {
-            size_t i = 1;
-            for (auto it = hand_->begin(); it != hand_->end(); ++it, ++i) {
-                cout << i << ": " << *it;
-                cout << ": ";
-                vector<Produce> produce = it->getProduce(*this);
-                copy(produce.begin(), produce.end(), infix_ostream_iterator<Produce>(cout, ", "));
-                cout << endl;
-            }
-        }
-        // Get what card user wants
-        size_t cardNum = 0;
-        while(cardNum <= 0 || cardNum > hand_->size() + 2) { // +2 for bury and burn
-            cin >> cardNum;
-        }
         vector<Card>& discardPile = game_->getDiscard();
-        play_card(discardPile[cardNum-1]);
-        discardPile.erase(discardPile.begin() + cardNum - 1);
-
-        wonder_.usePower();
+        if (discardPile.empty()) {
+            cout << "Sorry, but discard pile is empty." << endl;
+        } else {
+            // Print out discard pile
+            cout << "You want to play from discard (all free): " << endl;
+            {
+                size_t i = 1;
+                for (auto it = discardPile.begin(); it != discardPile.end(); ++it, ++i) {
+                    cout << i << ": " << *it;
+                    cout << ": ";
+                    vector<Produce> produce = it->getProduce(*this);
+                    copy(produce.begin(), produce.end(), infix_ostream_iterator<Produce>(cout, ", "));
+                    cout << endl;
+                }
+            }
+            // Get what card user wants
+            size_t cardNum = 0;
+            while(cardNum <= 0 || cardNum > discardPile.size()) {
+                cin >> cardNum;
+            }
+            playCard(discardPile[cardNum-1]);
+            discardPile.erase(discardPile.begin() + cardNum - 1);
+        }
     }
 }
+void Player::postAge() {
+    usedFreeBuild_ = false;
+}
 
-bool Player::selectPayment(const Card& card, vector<Pay> payPossibilities) {
+bool Player::selectPayment(const Card& card, vector<Pay> payPossibilities, bool canUseFreeBuild) {
+    vector<Produce> produce = getProduce();
+    bool freeStructureAvailable = canUseFreeBuild && !usedFreeBuild_ && std::find(produce.begin(), produce.end(), Produce::FREE_STRUCTURE) != produce.end();
 
-    if (payPossibilities.size() == 0) {
+    if (!freeStructureAvailable && payPossibilities.size() == 0) {
         // Can't play it at all. Don't do anything, don't break
         cout << "You can't do that" << endl;
-    } else if (payPossibilities[0] == Pay{}) {
+    } else if (payPossibilities.size() != 0 && payPossibilities[0] == Pay{}) {
         // It's free! Play it! 
-        play_card(card);
+        playCard(card);
         return true;
     } else {
         // Ask which option to do or none
@@ -274,21 +283,28 @@ bool Player::selectPayment(const Card& card, vector<Pay> payPossibilities) {
             for (auto it = payPossibilities.begin(); it != payPossibilities.end(); ++it, ++i) {
                 cout << i << ": " << *it << endl;
             }
+            if (freeStructureAvailable) {
+                cout << i++ << ": Build for free (once per age)" << endl;
+            }
             cout << i++ << ": Cancel" << endl;
         }
         size_t payNum = 0;
         while(payNum <= 0 || payNum > payPossibilities.size()+1) {
             cin >> payNum;
         }
-        if (payNum <= payPossibilities.size()) { // if not cancelled
+        if (payNum <= payPossibilities.size()) { // normal
             Pay pay = payPossibilities[payNum-1];
             coins_ -= pay.getTotal();
             leftPlayer_->giveCoins(pay.left);
             rightPlayer_->giveCoins(pay.right);
-            play_card(card);
+            playCard(card);
             return true;
-        }
-        else {
+        } else if (freeStructureAvailable && payNum == payPossibilities.size() + 1) {
+            // Using free build for this age
+            usedFreeBuild_ = true;
+            playCard(card);
+            return true;
+        } else {
             cout << "Choose again." << endl;
         }
     }
@@ -301,11 +317,16 @@ void Player::giveHand(list<Card>* hand) {
     hand_ = hand;
 }
 
-void Player::play_card(const Card& c) {
+void Player::playCard(const Card& c) {
 
     // Count all the coins
     vector<Produce> produce = c.getProduce(*this);
     coins_ += std::count(produce.begin(), produce.end(), Produce::COIN);
+
+    // See if we get to build from discard
+    if (std::find(produce.begin(), produce.end(), Produce::FROM_DISCARD) != produce.end()) {
+        playFromDiscard_ = true;
+    }
 
     cards_.push_back(c);
 }

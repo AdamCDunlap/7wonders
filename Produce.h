@@ -29,9 +29,15 @@ enum class Produce {
     LEFT_RAW_CHEAP,
     RIGHT_RAW_CHEAP,
     MANUFACTURED_CHEAP,
+    FREE_STRUCTURE,
+    FREE_STRUCTURE_USED,
+    FROM_DISCARD,
+    FROM_DISCARD_USED,
+    BUILD_SEVENTH,
 };
 
 std::vector<Produce> simplify(const Produce& p);
+std::vector<Produce> simplifyForBuy(const Produce& p);
 
 //bool operator<(const Produce& lhs, const Produce& rhs) {
 //    return static_cast<int>(lhs) < static_cast<int>(rhs);

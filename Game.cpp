@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Deck.h"
+#include "Utility.h"
 #include <ctime>
 #include <list>
 #include <algorithm>
@@ -26,6 +27,22 @@ Game::Game(vector<string> names) {
     }
 
     deck_ = Deck::getDeck(players_.size());
+    
+    vector<Wonder> allWonders = AllWonders::getAllWonders();
+    random_shuffle(allWonders.begin(), allWonders.end());
+    for(size_t i=0; i<players_.size(); ++i) {
+        players_[i].setGame(this);
+        players_[i].giveWonder(allWonders[i]);
+        players_[i].chooseWonderSide();
+    }
+}
+
+void Game::discard(const Card& c) {
+    discard_.push_back(c);
+}
+
+vector<Card>& Game::getDiscard() {
+    return discard_;
 }
 
 void Game::play() {
@@ -44,11 +61,17 @@ void Game::play() {
             for (size_t playerNo = 0; playerNo < players_.size(); ++playerNo) {
 
                 // Give the player a hand, which is shifted each turn
-                size_t handNo = (playerNo + turn) % players_.size();
+                // Add size of players*turn so that it's not negative before modulus
+                size_t handNo = (players_.size()*turn + playerNo + ((age % 2 != 0? -1 : 1) * turn)) % players_.size();
                 players_[playerNo].giveHand(&hands[handNo]);
 
                 players_[playerNo].takeTurn();
+                
             }
+            for (size_t playerNo = 0; playerNo < players_.size(); ++playerNo) {
+                players_[playerNo].postTurn();
+            }
+            //cout << "Discard pile: " << discard_ << endl;
         }
 
         // Military time

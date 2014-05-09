@@ -3,9 +3,9 @@
 #include <ostream>
 
 struct Pay {
-    size_t bank;
-    size_t left;
-    size_t right;
+    size_t bank = 0;
+    size_t left = 0;
+    size_t right = 0;
     size_t getTotal() const { return bank + left + right; }
 };
 

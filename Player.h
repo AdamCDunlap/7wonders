@@ -7,36 +7,49 @@ class Player;
 #include <string>
 #include <iostream>
 #include "Card.h"
+#include "Pay.h"
 #include "Produce.h"
+#include "Wonder.h"
+#include "Game.h"
 
 class Player {
 public:
     Player(std::string name);
     void setLeftRightPlayers(Player* left, Player* right);
-    std::vector<Card> getCards() const ;
-    std::vector<Produce> getProduce() const;
-    // Returns the given vector, but with the resources this player can provide removed
+    void setGame(Game* gm);
 
+    void chooseWonder(std::vector<Wonder>& options);
+    void giveWonder(const Wonder& w);
+    void chooseWonderSide();
 
     void takeTurn();
+    void postTurn(); // Called after everyone has played a card
     void giveHand(std::list<Card>* hand);
     void giveCoins(size_t numCoins);
 
+    void militaryWin(size_t pts) { militaryWinPts_ += pts; }
+    void militaryLoss() { ++militaryLosses_; }
 
+    std::vector<Card> getCards() const ;
+    std::vector<Produce> getProduce() const;
     std::string getName() const { return name_; }
     const Player* getLeftPlayer() const { return leftPlayer_; }
     const Player* getRightPlayer() const { return rightPlayer_; }
     size_t getCoins() const { return coins_; }
     size_t getMilitaryPts() const { return militaryWinPts_ - militaryLosses_; }
     size_t getMilitaryLosses() const { return militaryLosses_; }
-    void militaryWin(size_t pts) { militaryWinPts_ += pts; }
-    void militaryLoss() { ++militaryLosses_; }
+    bool isLeftRawCheap() const;
+    bool isRightRawCheap() const;
+    bool isManufacturedCheap() const;
 private:
 
     // Takes the coins for playing the card and adds it to list of cards
     void play_card(const Card& c);
+    bool selectPayment(const Card& card, std::vector<Pay> payPossibilities);
 
     const std::string name_;
+    Wonder wonder_;
+    Game* game_;
     std::vector<Card> cards_;
     std::list<Card>* hand_;
     size_t militaryWinPts_;
@@ -44,9 +57,12 @@ private:
     Player* leftPlayer_;
     Player* rightPlayer_;
     size_t coins_;
+
+    bool playFromDiscard_;
 };
 
 std::ostream& operator<< (std::ostream& o, const Player& player);
-std::vector<Produce> cancelResources(const Player& player, std::vector<Produce> produce);
+std::vector<Produce> cancelResources(const Player& player, std::vector<Produce> produce, bool forSelf = true);
+std::vector<Pay> payForResources(const Player& player, std::vector<Produce> toBePaid);
 
 #endif//PLAYER_H

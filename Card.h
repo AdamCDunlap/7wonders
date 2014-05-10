@@ -6,10 +6,11 @@ class Card;
 #include <algorithm>
 #include <string>
 #include <iostream>
-#include "Player.h"
 #include "Produce.h"
 #include "Color.h"
 #include "Pay.h"
+
+class Player;
 
 class Card {
 public:
@@ -18,6 +19,9 @@ public:
          std::vector<Produce> cost,
          std::vector<std::string> chainNames,
          std::function<std::vector<Produce> (const Player& p)> produce);
+    Card() : 
+        name_{"INVALID CARD"}
+    {}
 
     // Returns what the card gives the given player
     std::vector<Produce> getProduce(const Player& p) const;

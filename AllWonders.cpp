@@ -1,6 +1,7 @@
 
 #include "AllWonders.h"
 #include "Card.h"
+#include "Player.h"
 using namespace std;
 
 // Define helper conversion from vector to functional

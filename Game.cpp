@@ -62,7 +62,7 @@ void Game::play() {
 
                 // Give the player a hand, which is shifted each turn
                 // Add size of players*turn so that it's not negative before modulus
-                size_t handNo = (players_.size()*turn + playerNo + ((age % 2 != 0? -1 : 1) * turn)) % players_.size();
+                size_t handNo = (players_.size()*turn + playerNo + ((age % 2 != 0? 1 : -1) * turn)) % players_.size();
                 players_[playerNo].giveHand(&hands[handNo]);
 
                 players_[playerNo].takeTurn();
@@ -72,6 +72,9 @@ void Game::play() {
                 players_[playerNo].postTurn();
             }
             //cout << "Discard pile: " << discard_ << endl;
+        }
+        for (size_t playerNo = 0; playerNo < players_.size(); ++playerNo) {
+            players_[playerNo].revealAction();
         }
         for (size_t playerNo = 0; playerNo < players_.size(); ++playerNo) {
             players_[playerNo].postAge();

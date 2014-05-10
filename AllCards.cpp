@@ -202,7 +202,7 @@ std::vector<CardType> AllCards::getAllCards() {
         Color::BLUE,
         vector<Produce>{},
         vector<string>{},
-        vector<Produce>{Produce::VP, Produce::VP}
+        vector<Produce>{Produce::VP, Produce::VP, Produce::VP}
     });
     cards.push_back(CardType{
         "Baths",
@@ -472,7 +472,7 @@ std::vector<CardType> AllCards::getAllCards() {
         Color::GREEN,
         vector<Produce>{Produce::BRICK, Produce::BRICK, Produce::PAPER},
         vector<string>{"Scriptorium"},
-        vector<Produce>{Produce::GEAR}
+        vector<Produce>{Produce::TABLET}
     });
     cards.push_back(CardType{
         "School",

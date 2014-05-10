@@ -24,6 +24,7 @@ public:
 
     void takeTurn();
     void postTurn(); // Called after everyone has played a card
+    void revealAction();
     void postAge(); // Called after the age is done
     void giveHand(std::list<Card>* hand);
     void giveCoins(size_t numCoins);
@@ -46,7 +47,8 @@ private:
 
     // Takes the coins for playing the card and adds it to list of cards
     void playCard(const Card& c);
-    bool selectPayment(const Card& card, std::vector<Pay> payPossibilities, bool canUseFreeBuild);
+    bool selectPayment(std::vector<Pay> payPossibilities, bool canUseFreeBuild);
+    void processProduce(const std::vector<Produce>& produce);
 
     const std::string name_;
     Wonder wonder_;
@@ -61,6 +63,11 @@ private:
 
     bool playFromDiscard_;
     bool usedFreeBuild_;
+
+    // Stuff to know what to do at end of turn
+    enum class Action { BURY, BURN, PLAY } nextAction;
+    Card cardToPlay_;
+    Pay amountToPay_;
 };
 
 std::ostream& operator<< (std::ostream& o, const Player& player);

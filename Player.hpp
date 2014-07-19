@@ -6,11 +6,11 @@ class Player;
 #include <list>
 #include <string>
 #include <iostream>
-#include "Card.h"
-#include "Pay.h"
-#include "Produce.h"
-#include "Wonder.h"
-#include "Game.h"
+#include "Card.hpp"
+#include "Pay.hpp"
+#include "Produce.hpp"
+#include "Wonder.hpp"
+#include "Game.hpp"
 
 class Player {
 public:

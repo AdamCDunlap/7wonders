@@ -2,7 +2,7 @@
 #define ALLCARDS_H
 
 #include <vector>
-#include "CardType.h"
+#include "CardType.hpp"
 
 namespace AllCards {
     std::vector<CardType> getAllCards();

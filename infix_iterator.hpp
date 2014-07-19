@@ -1,4 +1,4 @@
-// infix_iterator.h 
+// infix_iterator.hpp 
 // 
 // Lifted from Jerry Coffin's 's prefix_ostream_iterator 
 #if !defined(INFIX_ITERATOR_H_) 

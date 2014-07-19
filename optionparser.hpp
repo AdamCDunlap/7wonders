@@ -51,7 +51,7 @@
  *
  * @par Highlights:
  * <ul style="padding-left:1em;margin-left:0">
- * <li> It is a header-only library. Just <code>\#include "optionparser.h"</code> and you're set.
+ * <li> It is a header-only library. Just <code>\#include "optionparser.hpp"</code> and you're set.
  * <li> It is freestanding. There are no dependencies whatsoever, not even the
  *      C or C++ standard library.
  * <li> It has a usage message formatter that supports column alignment and
@@ -91,7 +91,7 @@
  * Tarball with examples and test programs:
  * <a style="font-size:larger;font-weight:bold" href="http://sourceforge.net/projects/optionparser/files/optionparser-1.3.tar.gz/download">optionparser-1.3.tar.gz</a> @n
  * Just the header (this is all you really need):
- * <a style="font-size:larger;font-weight:bold" href="http://optionparser.sourceforge.net/optionparser.h">optionparser.h</a>
+ * <a style="font-size:larger;font-weight:bold" href="http://optionparser.sourceforge.net/optionparser.hpp">optionparser.h</a>
  *
  * @par Changelog:
  * <b>Version 1.3:</b> Compatible with Microsoft Visual C++. @n
@@ -113,7 +113,7 @@
  * (Note: @c option::* identifiers are links that take you to their documentation.)
  * @code
  * #include <iostream>
- * #include "optionparser.h"
+ * #include "optionparser.hpp"
  *
  * enum  optionIndex { UNKNOWN, HELP, PLUS };
  * const option::Descriptor usage[] =
@@ -219,7 +219,7 @@ namespace option
 {
 
 #ifdef _MSC_VER
-#include <intrin.h>
+#include <intrin.hpp>
 #pragma intrinsic(_BitScanReverse)
 struct MSC_Builtin_CLZ
 {
@@ -2679,7 +2679,7 @@ struct PrintUsageImplementation
  * will work.
  *
  * @code
- * #include <unistd.h>  // write()
+ * #include <unistd.hpp>  // write()
  * #include <iostream>  // cout
  * #include <sstream>   // ostringstream
  * #include <cstdio>    // fwrite()

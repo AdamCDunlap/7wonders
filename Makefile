@@ -15,21 +15,24 @@ clean:
 	$(CXX) $(SEVEN_WONDERS_OBJECTS) -o 7wonders
 
 # compiler generated rules
-7wonders.o: 7wonders.cpp Game.h Card.h Player.h Pay.h Produce.h Wonder.h \
-  Color.h AllWonders.h optionparser.h Utility.h Utility-private.hpp
-AllCards.o: AllCards.cpp AllCards.h CardType.h Card.h Player.h Pay.h \
-  Produce.h Wonder.h Game.h AllWonders.h Color.h
-AllWonders.o: AllWonders.cpp AllWonders.h Wonder.h Produce.h Card.h \
-  Player.h Pay.h Game.h Color.h
-Card.o: Card.cpp Card.h Player.h Pay.h Produce.h Wonder.h Game.h \
-  AllWonders.h Color.h Utility.h Utility-private.hpp
-CardType.o: CardType.cpp CardType.h Card.h Player.h Pay.h Produce.h \
-  Wonder.h Game.h AllWonders.h Color.h
-Deck.o: Deck.cpp Deck.h Card.h Player.h Pay.h Produce.h Wonder.h Game.h \
-  AllWonders.h Color.h CardType.h AllCards.h
-Game.o: Game.cpp Game.h Card.h Player.h Pay.h Produce.h Wonder.h Color.h \
-  AllWonders.h Deck.h CardType.h Utility.h Utility-private.hpp
-Pay.o: Pay.cpp Pay.h
-Player.o: Player.cpp Player.h Card.h Produce.h Color.h Pay.h Wonder.h \
-  Game.h AllWonders.h infix_iterator.h Utility.h Utility-private.hpp
-Produce.o: Produce.cpp Produce.h
+7wonders.o: 7wonders.cpp Game.hpp Card.hpp Produce.hpp Color.hpp Pay.hpp \
+ Player.hpp Wonder.hpp AllWonders.hpp optionparser.hpp Utility.hpp \
+ Utility-private.hpp
+AllCards.o: AllCards.cpp AllCards.hpp CardType.hpp Card.hpp Produce.hpp \
+ Color.hpp Pay.hpp Player.hpp Wonder.hpp Game.hpp AllWonders.hpp
+AllWonders.o: AllWonders.cpp AllWonders.hpp Wonder.hpp Produce.hpp \
+ Card.hpp Color.hpp Pay.hpp Player.hpp Game.hpp
+Card.o: Card.cpp Card.hpp Produce.hpp Color.hpp Pay.hpp Player.hpp \
+ Wonder.hpp Game.hpp AllWonders.hpp Utility.hpp Utility-private.hpp
+CardType.o: CardType.cpp CardType.hpp Card.hpp Produce.hpp Color.hpp \
+ Pay.hpp Player.hpp Wonder.hpp Game.hpp AllWonders.hpp
+Deck.o: Deck.cpp Deck.hpp Card.hpp Produce.hpp Color.hpp Pay.hpp \
+ CardType.hpp Player.hpp Wonder.hpp Game.hpp AllWonders.hpp AllCards.hpp
+Game.o: Game.cpp Game.hpp Card.hpp Produce.hpp Color.hpp Pay.hpp \
+ Player.hpp Wonder.hpp AllWonders.hpp Deck.hpp CardType.hpp Utility.hpp \
+ Utility-private.hpp
+Pay.o: Pay.cpp Pay.hpp
+Player.o: Player.cpp Player.hpp Card.hpp Produce.hpp Color.hpp Pay.hpp \
+ Wonder.hpp Game.hpp AllWonders.hpp infix_iterator.hpp Utility.hpp \
+ Utility-private.hpp
+Produce.o: Produce.cpp Produce.hpp

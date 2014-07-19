@@ -1,4 +1,4 @@
-#include "Pay.h"
+#include "Pay.hpp"
 
 bool operator==(const Pay& p1, const Pay& p2)
 {

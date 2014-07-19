@@ -1,6 +1,6 @@
-#include "Card.h"
-#include "Player.h"
-#include "Utility.h"
+#include "Card.hpp"
+#include "Player.hpp"
+#include "Utility.hpp"
 
 using namespace std;
 

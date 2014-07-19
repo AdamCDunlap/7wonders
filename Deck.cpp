@@ -1,8 +1,8 @@
 #include <cassert>
 #include <algorithm>
 #include <iterator>
-#include "Deck.h"
-#include "AllCards.h"
+#include "Deck.hpp"
+#include "AllCards.hpp"
 
 using namespace std;
 vector< vector<Card> > Deck::getDeck(size_t numPlayers) {

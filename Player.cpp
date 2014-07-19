@@ -1,6 +1,6 @@
-#include "Player.h"
-#include "infix_iterator.h"
-#include "Utility.h"
+#include "Player.hpp"
+#include "infix_iterator.hpp"
+#include "Utility.hpp"
 #include <iostream>
 #include <iterator>
 #include <cassert>

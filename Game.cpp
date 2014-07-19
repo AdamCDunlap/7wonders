@@ -1,6 +1,6 @@
-#include "Game.h"
-#include "Deck.h"
-#include "Utility.h"
+#include "Game.hpp"
+#include "Deck.hpp"
+#include "Utility.hpp"
 #include <ctime>
 #include <list>
 #include <algorithm>

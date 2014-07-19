@@ -1,4 +1,4 @@
-#include "Produce.h"
+#include "Produce.hpp"
 
 std::ostream& operator<< (std::ostream& o, const Produce& p) {
     switch(p) {

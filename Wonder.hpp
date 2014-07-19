@@ -2,7 +2,7 @@ class Wonder;
 #ifndef WONDER_H
 #define WONDER_H
 
-#include "Produce.h"
+#include "Produce.hpp"
 #include <vector>
 #include <string>
 #include <functional>

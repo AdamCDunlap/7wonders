@@ -1,9 +1,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "Game.h"
-#include "optionparser.h"
-#include "Utility.h"
+#include "Game.hpp"
+#include "optionparser.hpp"
+#include "Utility.hpp"
 using namespace std;
 
 struct Arg: public option::Arg

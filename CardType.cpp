@@ -1,4 +1,4 @@
-#include "CardType.h"
+#include "CardType.hpp"
 
 using namespace std;
 

@@ -6,9 +6,9 @@ class Card;
 #include <algorithm>
 #include <string>
 #include <iostream>
-#include "Produce.h"
-#include "Color.h"
-#include "Pay.h"
+#include "Produce.hpp"
+#include "Color.hpp"
+#include "Pay.hpp"
 
 class Player;
 

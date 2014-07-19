@@ -2,7 +2,7 @@
 #define ALLWONDERS_H
 
 #include <vector>
-#include "Wonder.h"
+#include "Wonder.hpp"
 
 namespace AllWonders {
     std::vector<Wonder> getAllWonders();

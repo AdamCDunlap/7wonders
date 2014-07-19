@@ -4,11 +4,11 @@ class Game;
 
 #include <vector>
 #include <string>
-#include "Card.h"
-#include "Player.h"
-#include "Produce.h"
-#include "Wonder.h"
-#include "AllWonders.h"
+#include "Card.hpp"
+#include "Player.hpp"
+#include "Produce.hpp"
+#include "Wonder.hpp"
+#include "AllWonders.hpp"
 
 class Game {
 public:

@@ -6,11 +6,11 @@ class CardType;
 #include <algorithm>
 #include <string>
 #include <iostream>
-#include "Card.h"
-#include "Player.h"
-#include "Produce.h"
-#include "Color.h"
-#include "Pay.h"
+#include "Card.hpp"
+#include "Player.hpp"
+#include "Produce.hpp"
+#include "Color.hpp"
+#include "Pay.hpp"
 
 class CardType {
 public:

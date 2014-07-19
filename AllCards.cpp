@@ -1,5 +1,5 @@
 
-#include "AllCards.h"
+#include "AllCards.hpp"
 using namespace std;
 
 std::vector<CardType> AllCards::getAllCards() {

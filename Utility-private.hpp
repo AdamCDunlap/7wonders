@@ -1,4 +1,38 @@
 #include <ostream>
+//#include "Utility.h"
+//#include <cassert>
+
+template<typename T>
+std::vector< std::vector< std::vector<T> > > split(
+        size_t n,
+        typename std::vector<T>::const_iterator begin,
+        typename std::vector<T>::const_iterator end)
+{
+    // Start with one option: n empty paritions
+    if (begin == end) {
+        return std::vector< std::vector< std::vector<T> > > { std::vector< std::vector<T> >(n, std::vector<T>{}) };
+    }
+    std::vector< std::vector< std::vector<T> > > ret{};
+    // outer: list of ways to do it
+    // middle: two sides
+    // inner: produce in each side
+    //
+    // for each in outer
+    // add two to new, one with it in the first and one with it in the second
+    
+    typename std::vector<T>::const_iterator beginPlusOne{begin};
+    ++beginPlusOne;
+    const std::vector< std::vector< std::vector<T> > > payRest = splitIntoTwo<T>(beginPlusOne, end);
+
+    for(const std::vector< std::vector<T> >& pay : payRest) {
+        for(size_t i=0; i<n; ++i) {
+            std::vector< std::vector<T> > payCopy = pay;
+            payCopy[i].push_back(*begin);
+            ret.push_back(payCopy);
+        }
+    }
+    return ret;
+}
 
 template<typename T>
 std::vector< std::vector< std::vector<T> > > splitIntoTwo(
@@ -110,6 +144,7 @@ std::ostream& operator<< (std::ostream& out, const std::vector<T>& v) {
 
 //int main() {
 //    //std::vector< std::vector< std::vector<int> > > expected1{ std::vector< std::vector<int> > {std::vector<int>{1
-//    std::vector<int> test{1, 2, 3};
-//    cout << splitIntoTwo<int>(test.begin(), test.end()) << std::endl;
+//    std::vector<int> test{1, 2, 3, 4, 5};
+//    std::cout << (splitIntoTwo<int>(test.begin(), test.end()) == split<int>(2, test.begin(), test.end())) << std::endl;
+//    //cout << splitIntoTwo<int>(test.begin(), test.end()) << std::endl;
 //}

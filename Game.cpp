@@ -64,18 +64,17 @@ void Game::play() {
                 // Add size of players*turn so that it's not negative before modulus
                 size_t handNo = (players_.size()*turn + playerNo + ((age % 2 != 0? 1 : -1) * turn)) % players_.size();
                 players_[playerNo].giveHand(&hands[handNo]);
+            }
 
-                players_[playerNo].takeTurn();
-                
+            for (size_t i=0; i<Player::turnRounds; ++i) {
+                for (size_t playerNo = 0; playerNo < players_.size(); ++playerNo) {
+                    players_[playerNo].takeTurn(i);
+                }
             }
-            for (size_t playerNo = 0; playerNo < players_.size(); ++playerNo) {
-                players_[playerNo].postTurn();
-            }
-            //cout << "Discard pile: " << discard_ << endl;
         }
-        for (size_t playerNo = 0; playerNo < players_.size(); ++playerNo) {
-            players_[playerNo].revealAction();
-        }
+        //for (size_t playerNo = 0; playerNo < players_.size(); ++playerNo) {
+        //    players_[playerNo].revealAction();
+        //}
         for (size_t playerNo = 0; playerNo < players_.size(); ++playerNo) {
             players_[playerNo].postAge();
         }
@@ -107,7 +106,25 @@ void Game::play() {
         size_t gears     = std::count(finalProduce.begin(), finalProduce.end(), Produce::GEAR),
                tablets   = std::count(finalProduce.begin(), finalProduce.end(), Produce::TABLET),
                compasses = std::count(finalProduce.begin(), finalProduce.end(), Produce::COMPASS);
-        size_t sciencePts = std::min({gears, tablets, compasses})*7 + gears*gears + tablets*tablets + compasses*compasses;
+        size_t sciencePts = 0;
+        for (size_t i=std::count(finalProduce.begin(), finalProduce.end(), Produce::ANY_SCIENCE); i>0; --i) {
+
+            // TODO: This isn't right... it only works for 1 ANY_SCIENCE
+            
+
+            ++gears;
+            size_t pts = std::min({gears, tablets, compasses})*7 + gears*gears + tablets*tablets + compasses*compasses;
+            if(pts > sciencePts) sciencePts = pts;
+            --gears;
+            ++tablets;
+            pts = std::min({gears, tablets, compasses})*7 + gears*gears + tablets*tablets + compasses*compasses;
+            if(pts > sciencePts) sciencePts = pts;
+            --tablets;
+            ++compasses;
+            pts = std::min({gears, tablets, compasses})*7 + gears*gears + tablets*tablets + compasses*compasses;
+            if(pts > sciencePts) sciencePts = pts;
+            --compasses;
+        }
         int points = std::count(finalProduce.begin(), finalProduce.end(), Produce::VP)
                      + p.getMilitaryPts()
                      + p.getCoins() / 3

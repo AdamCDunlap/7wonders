@@ -86,171 +86,12 @@ void Player::giveCoins(size_t numCoins) {
     coins_ += numCoins;
 }
 
-void Player::takeTurn() {
-    // Print out what cards, etc. the player has
-    //cout << *this << endl;
-    cout << endl << endl << endl << endl;
-    cout << "Name: " << getName() << endl;
-    cout << "Wonder: " << wonder_ << endl;
-
-    // Print out the cards
-    cout << "You have: " << endl;
-    cout << coins_ << " Coins" << endl;
-    cout << cards_ << endl;
-    cout << getProduce() << endl;
-
-    // Print out hand
-    cout << "You want to play: " << endl;
+void Player::takeTurn(size_t i) {
+    switch(i) {
+    case 0:
     {
-        size_t i = 1;
-        for (auto it = hand_->begin(); it != hand_->end(); ++it, ++i) {
-            cout << i << ": " << *it;
-
-            vector<Pay> payPossibilities = it->canPlay(*this);
-            cout << "(";
-            if (payPossibilities.size() != 0) {
-                if (payPossibilities[0] == Pay{}) {
-                    cout << "free";
-                } else {
-                    cout << "costs: ";
-                    copy(payPossibilities.begin(), payPossibilities.end(), infix_ostream_iterator<Pay>(cout, " OR "));
-                }
-            }
-            else {
-                cout << "unplayable";
-            }
-            cout << ")";
-            cout << ": ";
-            vector<Produce> produce = it->getProduce(*this);
-            copy(produce.begin(), produce.end(), infix_ostream_iterator<Produce>(cout, ", "));
-            cout << endl;
-        }
-        cout << i++ << ": Bury";
-        if (wonder_.isFull()) {
-            cout << "(Wonder full)" << endl;
-        } else {
-            vector<Pay> payPossibilities = payForResources(*this, wonder_.getCost());
-            cout << "(";
-            if (payPossibilities.size() != 0) {
-                if (payPossibilities[0] == Pay{}) {
-                    cout << "free";
-                } else {
-                    cout << "costs: ";
-                    copy(payPossibilities.begin(), payPossibilities.end(), infix_ostream_iterator<Pay>(cout, " OR "));
-                }
-            }
-            else {
-                cout << "unplayable";
-            }
-            cout << ")";
-            cout << ": ";
-            vector<Produce> produce = wonder_.getProduceFromNext(*this);
-            copy(produce.begin(), produce.end(), infix_ostream_iterator<Produce>(cout, ", "));
-            cout << endl;
-        }
-        cout << i++ << ": Burn" << endl;
-    }
-
-    decltype(hand_->begin()) cardIt;
-    bool moveMade = false;
-    while(!moveMade) {
-        cardIt = hand_->begin();
-        // Get what card user wants
-        size_t cardNum = 0;
-        while(cardNum <= 0 || cardNum > hand_->size() + 2) { // +2 for bury and burn
-            cin >> cardNum;
-        }
-        if (cardNum == hand_->size() + 1)
-            nextAction = Action::BURY;
-        else if (cardNum == hand_->size() + 2)
-            nextAction = Action::BURN;
-        else
-            nextAction = Action::PLAY;
-
-        switch(nextAction) {
-        case Action::PLAY:
-        {
-            advance(cardIt, cardNum-1);
-
-            // Can we?
-            vector<Pay> payPossibilities = cardIt->canPlay(*this);
-            moveMade = selectPayment(payPossibilities, true);
-            if(moveMade) cardToPlay_ = *cardIt;
-            break;
-        }
-        case Action::BURY:
-        case Action::BURN:
-        { // We're doing a special action, so ask what card
-            assert(cardNum <= hand_->size() + 2);
-            
-            cardNum = 0;
-            cout << "Which card?" << endl;
-            while(cardNum <= 0 || cardNum > hand_->size()) {
-                cin >> cardNum;
-            }
-            advance(cardIt, cardNum-1);
-
-            //cout << "CardNum is " << cardNum << endl;
-            if(nextAction == Action::BURY) {
-                if (wonder_.isFull()) break;
-                // Bury the card
-                vector<Produce> cost = wonder_.getCost();
-
-                vector<Pay> payPossibilities = payForResources(*this, cost);
-                moveMade = selectPayment(payPossibilities, false);
-                break;
-            } else {
-                cardToPlay_ = *cardIt;
-                moveMade = true;
-                break;
-            }
-        }
-        }
-    }
-
-    // Delete the selected card
-    hand_->erase(cardIt);
-    // Special case for last card: either play it if we can or discard it
-    if (hand_->size() == 1) {
-        vector<Produce> produce = getProduce();
-        if (std::find(produce.begin(), produce.end(), Produce::BUILD_SEVENTH) != produce.end()) {
-            // If it's the last turn and we're allowed to build the last one, build it
-            takeTurn();
-        } else {
-            // Discard the last card
-            game_->discard(*hand_->begin());
-        }
-    }
-
-}
-
-void Player::revealAction() {
-    switch(nextAction) {
-    case Action::PLAY:
-        // Actually play the card
-        coins_ -= amountToPay_.getTotal();
-        leftPlayer_->giveCoins(amountToPay_.left);
-        rightPlayer_->giveCoins(amountToPay_.right);
-        playCard(cardToPlay_);
-        break;
-    case Action::BURN:
-        game_->discard(cardToPlay_);
-        break;
-    case Action::BURY:
-    {
-        vector<Produce> produce = wonder_.getProduceFromNext(*this);
-        processProduce(produce);
-        wonder_.build();
-        break;
-    }
-    }
-}
-
-void Player::postTurn() {
-
-    if (playFromDiscard_) {
-        playFromDiscard_ = false; // Only get to do it once
-
+        // Print out what cards, etc. the player has
+        //cout << *this << endl;
         cout << endl << endl << endl << endl;
         cout << "Name: " << getName() << endl;
         cout << "Wonder: " << wonder_ << endl;
@@ -261,37 +102,211 @@ void Player::postTurn() {
         cout << cards_ << endl;
         cout << getProduce() << endl;
 
-        vector<Card>& discardPile = game_->getDiscard();
-        if (discardPile.empty()) {
-            cout << "Sorry, but discard pile is empty." << endl;
-        } else {
-            // Print out discard pile
-            cout << "You want to play from discard (all free): " << endl;
-            {
-                size_t i = 1;
-                for (auto it = discardPile.begin(); it != discardPile.end(); ++it, ++i) {
-                    cout << i << ": " << *it;
-                    cout << ": ";
-                    vector<Produce> produce = it->getProduce(*this);
-                    copy(produce.begin(), produce.end(), infix_ostream_iterator<Produce>(cout, ", "));
-                    cout << endl;
+        // Print out hand
+        cout << "You want to play: " << endl;
+        {
+            size_t i = 1;
+            for (auto it = hand_->begin(); it != hand_->end(); ++it, ++i) {
+                cout << i << ": " << *it;
+
+                vector<Pay> payPossibilities = it->canPlay(*this);
+                cout << "(";
+                if (payPossibilities.size() != 0) {
+                    if (payPossibilities[0] == Pay{}) {
+                        cout << "free";
+                    } else {
+                        cout << "costs: ";
+                        copy(payPossibilities.begin(), payPossibilities.end(), infix_ostream_iterator<Pay>(cout, " OR "));
+                    }
                 }
+                else {
+                    cout << "unplayable";
+                }
+                cout << ")";
+                cout << ": ";
+                vector<Produce> produce = it->getProduce(*this);
+                copy(produce.begin(), produce.end(), infix_ostream_iterator<Produce>(cout, ", "));
+                cout << endl;
             }
+            cout << i++ << ": Bury";
+            if (wonder_.isFull()) {
+                cout << "(Wonder full)" << endl;
+            } else {
+                vector<Pay> payPossibilities = payForResources(*this, wonder_.getCost());
+                cout << "(";
+                if (payPossibilities.size() != 0) {
+                    if (payPossibilities[0] == Pay{}) {
+                        cout << "free";
+                    } else {
+                        cout << "costs: ";
+                        copy(payPossibilities.begin(), payPossibilities.end(), infix_ostream_iterator<Pay>(cout, " OR "));
+                    }
+                }
+                else {
+                    cout << "unplayable";
+                }
+                cout << ")";
+                cout << ": ";
+                vector<Produce> produce = wonder_.getProduceFromNext(*this);
+                copy(produce.begin(), produce.end(), infix_ostream_iterator<Produce>(cout, ", "));
+                cout << endl;
+            }
+            cout << i++ << ": Burn" << endl;
+        }
+
+        Action action;
+        decltype(hand_->begin()) cardIt;
+        bool moveMade = false;
+        while(!moveMade) {
+            cardIt = hand_->begin();
             // Get what card user wants
             size_t cardNum = 0;
-            while(cardNum <= 0 || cardNum > discardPile.size()) {
+            while(cardNum <= 0 || cardNum > hand_->size() + 2) { // +2 for bury and burn
                 cin >> cardNum;
             }
-            playCard(discardPile[cardNum-1]);
-            discardPile.erase(discardPile.begin() + cardNum - 1);
+            if (cardNum == hand_->size() + 1)
+                action.type = ActionType::BURY;
+            else if (cardNum == hand_->size() + 2)
+                action.type = ActionType::BURN;
+            else
+                action.type = ActionType::PLAY;
+
+            switch(action.type) {
+            case ActionType::PLAY:
+            {
+                advance(cardIt, cardNum-1);
+
+                // Can we?
+                vector<Pay> payPossibilities = cardIt->canPlay(*this);
+                moveMade = selectPayment(action, payPossibilities, true);
+                if(moveMade) action.cardIt = cardIt;
+                break;
+            }
+            case ActionType::BURY:
+            case ActionType::BURN:
+            { // We're doing a special action, so ask what card
+                assert(cardNum <= hand_->size() + 2);
+                
+                cardNum = 0;
+                cout << "Which card?" << endl;
+                while(cardNum <= 0 || cardNum > hand_->size()) {
+                    cin >> cardNum;
+                }
+                advance(cardIt, cardNum-1);
+
+                //cout << "CardNum is " << cardNum << endl;
+                if(action.type == ActionType::BURY) {
+                    if (wonder_.isFull()) break;
+                    // Bury the card
+                    vector<Produce> cost = wonder_.getCost();
+
+                    vector<Pay> payPossibilities = payForResources(*this, cost);
+                    moveMade = selectPayment(action, payPossibilities, false);
+                } else {
+                    moveMade = true;
+                }
+                action.cardIt = cardIt;
+                break;
+            }
+            }
         }
+        nextAction = action;
+        break;
     }
+    case 1:
+    {
+        coins_ -= nextAction.pay.getTotal();
+        leftPlayer_->giveCoins(nextAction.pay.left);
+        rightPlayer_->giveCoins(nextAction.pay.right);
+
+        switch(nextAction.type) {
+        case ActionType::PLAY:
+            // Actually play the card
+            playCard(*nextAction.cardIt);
+            break;
+        case ActionType::BURN:
+            game_->discard(*nextAction.cardIt);
+            break;
+        case ActionType::BURY:
+        {
+            vector<Produce> produce = wonder_.getProduceFromNext(*this);
+            processProduce(produce);
+            wonder_.build();
+            break;
+        }
+        }
+
+        // Delete the played card
+        hand_->erase(nextAction.cardIt);
+        break;
+    }
+    case 2:
+    {
+        // Special case for last card: either play it if we can or discard it
+        if (hand_->size() == 1) {
+            vector<Produce> produce = getProduce();
+            if (std::find(produce.begin(), produce.end(), Produce::BUILD_SEVENTH) != produce.end()) {
+                // If it's the last turn and we're allowed to build the last one, build it
+                takeTurn(0);
+                takeTurn(1);
+            } else {
+                // Discard the last card
+                game_->discard(*hand_->begin());
+            }
+        }
+        break;
+    }
+    case 3:
+    {
+        if (playFromDiscard_) {
+            playFromDiscard_ = false; // Only get to do it once
+
+            cout << endl << endl << endl << endl;
+            cout << "Name: " << getName() << endl;
+            cout << "Wonder: " << wonder_ << endl;
+
+            // Print out the cards
+            cout << "You have: " << endl;
+            cout << coins_ << " Coins" << endl;
+            cout << cards_ << endl;
+            cout << getProduce() << endl;
+
+            vector<Card>& discardPile = game_->getDiscard();
+            if (discardPile.empty()) {
+                cout << "Sorry, but discard pile is empty." << endl;
+            } else {
+                // Print out discard pile
+                cout << "You want to play from discard (all free): " << endl;
+                {
+                    size_t i = 1;
+                    for (auto it = discardPile.begin(); it != discardPile.end(); ++it, ++i) {
+                        cout << i << ": " << *it;
+                        cout << ": ";
+                        vector<Produce> produce = it->getProduce(*this);
+                        copy(produce.begin(), produce.end(), infix_ostream_iterator<Produce>(cout, ", "));
+                        cout << endl;
+                    }
+                }
+                // Get what card user wants
+                size_t cardNum = 0;
+                while(cardNum <= 0 || cardNum > discardPile.size()) {
+                    cin >> cardNum;
+                }
+                playCard(discardPile[cardNum-1]);
+                discardPile.erase(discardPile.begin() + cardNum - 1);
+            }
+        }
+        break;
+    }
+    }
+
 }
+
 void Player::postAge() {
     usedFreeBuild_ = false;
 }
 
-bool Player::selectPayment(vector<Pay> payPossibilities, bool canUseFreeBuild) {
+bool Player::selectPayment(Action& action, vector<Pay> payPossibilities, bool canUseFreeBuild) {
     vector<Produce> produce = getProduce();
     bool freeStructureAvailable = canUseFreeBuild && !usedFreeBuild_ && std::find(produce.begin(), produce.end(), Produce::FREE_STRUCTURE) != produce.end();
 
@@ -320,7 +335,7 @@ bool Player::selectPayment(vector<Pay> payPossibilities, bool canUseFreeBuild) {
             cin >> payNum;
         }
         if (payNum <= payPossibilities.size()) { // normal
-            amountToPay_ = payPossibilities[payNum-1];
+            action.pay = payPossibilities[payNum-1];
             return true;
         } else if (freeStructureAvailable && payNum == payPossibilities.size() + 1) {
             // Using free build for this age

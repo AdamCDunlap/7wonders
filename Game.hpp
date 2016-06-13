@@ -21,7 +21,7 @@ private:
     std::vector< std::vector<Card> > deck_;
     std::vector< Player > players_;
     std::vector< Card > discard_;
-    
+
 };
 
 #endif//GAME_H

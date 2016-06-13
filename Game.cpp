@@ -27,7 +27,7 @@ Game::Game(vector<string> names) {
     }
 
     deck_ = Deck::getDeck(players_.size());
-    
+
     vector<Wonder> allWonders = AllWonders::getAllWonders();
     random_shuffle(allWonders.begin(), allWonders.end());
     for(size_t i=0; i<players_.size(); ++i) {
@@ -48,7 +48,7 @@ vector<Card>& Game::getDiscard() {
 void Game::play() {
     for (int age = 0; age < 3; ++age) {
 
-        // Make the hands for this age 
+        // Make the hands for this age
         random_shuffle(deck_[age].begin(), deck_[age].end());
         vector< list<Card> > hands;
         hands.reserve(players_.size());
@@ -110,7 +110,7 @@ void Game::play() {
         for (size_t i=std::count(finalProduce.begin(), finalProduce.end(), Produce::ANY_SCIENCE); i>0; --i) {
 
             // TODO: This isn't right... it only works for 1 ANY_SCIENCE
-            
+
 
             ++gears;
             size_t pts = std::min({gears, tablets, compasses})*7 + gears*gears + tablets*tablets + compasses*compasses;
@@ -137,7 +137,7 @@ void Game::play() {
             winners.push_back(&p);
             winningPoints = points;
         }
-        
+
         //int points = filter([](const Produce& r){ return r == Produce::VP; }, finalProduce).size();
     }
     if (winners.size() > 1) {

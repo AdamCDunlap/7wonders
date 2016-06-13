@@ -186,7 +186,7 @@ void Player::takeTurn(size_t i) {
             case ActionType::BURN:
             { // We're doing a special action, so ask what card
                 assert(cardNum <= hand_->size() + 2);
-                
+
                 cardNum = 0;
                 cout << "Which card?" << endl;
                 while(cardNum <= 0 || cardNum > hand_->size()) {
@@ -314,7 +314,7 @@ bool Player::selectPayment(Action& action, vector<Pay> payPossibilities, bool ca
         // Can't play it at all. Don't do anything, don't break
         cout << "You can't do that" << endl;
     } else if (payPossibilities.size() != 0 && payPossibilities[0] == Pay{}) {
-        // It's free! Play it! 
+        // It's free! Play it!
         return true;
     } else {
         // Ask which option to do or none
@@ -470,7 +470,7 @@ vector<Pay> payForResources(const Player& player, vector<Produce> toBePaid)
         coinsToBank += std::distance(newEnd, toBePaid.end()); // How many coins were removed
         toBePaid.erase(newEnd, toBePaid.end());
     }
-    
+
     toBePaid = cancelResources(player, toBePaid);
 
     vector<Pay> payPossibilities;
@@ -480,7 +480,7 @@ vector<Pay> payForResources(const Player& player, vector<Produce> toBePaid)
         pay.bank = coinsToBank;
         payPossibilities.push_back(pay);
     } else {
-        
+
         vector< vector< vector<Produce> > > waysToSplit = splitIntoTwo<Produce>(toBePaid.cbegin(), toBePaid.cend());
         //cout << "Ways to split: " << waysToSplit << endl;
         for (const vector< vector<Produce> >& wayToSplit : waysToSplit) {
@@ -489,7 +489,7 @@ vector<Pay> payForResources(const Player& player, vector<Produce> toBePaid)
             if(!cancelResources(*player.getLeftPlayer(), wayToSplit[0], false).empty()) continue;
             if(!cancelResources(*player.getRightPlayer(), wayToSplit[1], false).empty()) continue;
             //cout << "And it works!" << endl;
-            
+
 
             // Then see how much we're paying them
             Pay pay;
@@ -511,7 +511,7 @@ vector<Pay> payForResources(const Player& player, vector<Produce> toBePaid)
             payPossibilities.push_back(pay);
         }
     }
-    
+
     // Get rid of possibilities that are too expensive
     payPossibilities.erase(remove_if(payPossibilities.begin(), payPossibilities.end(),
             [player](const Pay& p) { return p.getTotal() > player.getCoins(); }),

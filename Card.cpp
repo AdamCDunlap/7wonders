@@ -15,7 +15,7 @@ Card::Card(const string name,
       chainNames_{chainNames},
       getProduce_{getProduce}
     {
-    
+
 }
 
  vector<Produce> Card::getProduce(const Player& p) const {
@@ -26,7 +26,7 @@ vector<Pay> Card::canPlay(const Player& player) const {
 
     vector<Card> cards = player.getCards();
     // Make sure player doesn't already have this card
-    
+
     if (any_of(cards.begin(), cards.end(),
             [this](const Card& c) { return c.getName() == name_; })) {
         // If player already has card of the same name, we can't play it

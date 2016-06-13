@@ -23,7 +23,7 @@ public:
     void chooseWonderSide();
 
     static const size_t turnRounds = 4;
-    void takeTurn(size_t i); // Index is 
+    void takeTurn(size_t i); // Index is
     void postAge(); // Called after the age is done
     void giveHand(std::list<Card>* hand);
     void giveCoins(size_t numCoins);

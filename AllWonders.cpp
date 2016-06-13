@@ -45,7 +45,7 @@ std::vector<Wonder> AllWonders::getAllWonders() {
         { { {Produce::WOOD, Produce::WOOD}, {Produce::STONE, Produce::STONE}, {Produce::ORE, Produce::ORE} },
           { {Produce::WOOD, Produce::WOOD}, {Produce::STONE, Produce::STONE}, {Produce::CLOTH, Produce::ORE, Produce::ORE} } },
         { { v2f({Produce::WOOD}), v2f({Produce::VP, Produce::VP, Produce::VP}), v2f({Produce::FREE_STRUCTURE}), v2f({Produce::VP, Produce::VP, Produce::VP, Produce::VP, Produce::VP, Produce::VP, Produce::VP})},
-          { v2f({Produce::WOOD}), v2f({Produce::LEFT_RAW_CHEAP, Produce::RIGHT_RAW_CHEAP}), v2f({Produce::VP, Produce::VP, Produce::VP, Produce::VP, Produce::VP}), 
+          { v2f({Produce::WOOD}), v2f({Produce::LEFT_RAW_CHEAP, Produce::RIGHT_RAW_CHEAP}), v2f({Produce::VP, Produce::VP, Produce::VP, Produce::VP, Produce::VP}),
             [](const Player& p){
                 // Return a number of VP equal to the highest that would be gotten from the purple cards on either side
                 size_t most_points = 0;

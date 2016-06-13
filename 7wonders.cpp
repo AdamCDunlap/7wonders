@@ -21,8 +21,8 @@ struct Arg: public option::Arg
             if (option.arg != 0 && strtol(option.arg, &endptr, 10)){};
             if (endptr != option.arg && *endptr == 0)
               return option::ARG_OK;
-            
-            
+
+
             if (msg) printError("Option '", option, "' requires a numeric argument\n");
             return option::ARG_ILLEGAL;
         } else {
@@ -59,10 +59,10 @@ int main(int argc, char* argv[]) {
         option::printUsage(std::cout, usage);
         return 0;
     }
-    
+
     for (option::Option* opt = options[UNKNOWN]; opt; opt = opt->next())
         cout << "Unknown option: " << opt->name << endl;
-    
+
     for (int i = 0; i < parse.nonOptionsCount(); ++i)
         cout << "Non-option #" << i << ": " << parse.nonOption(i) << endl;
 

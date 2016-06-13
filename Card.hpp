@@ -19,7 +19,7 @@ public:
          std::vector<Produce> cost,
          std::vector<std::string> chainNames,
          std::function<std::vector<Produce> (const Player& p)> produce);
-    Card() : 
+    Card() :
         name_{"INVALID CARD"}
     {}
 
@@ -28,7 +28,7 @@ public:
 
     // Returns all possible options for paying for card
     std::vector<Pay> canPlay(const Player& p) const;
- 
+
     // Accessors
     std::string getName() const { return name_; }
     Color getColor() const { return color_; }

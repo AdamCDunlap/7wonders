@@ -38,7 +38,7 @@ vector< vector<Card> > Deck::getDeck(size_t numPlayers) {
     guilds.reserve(10);
     std::copy_if(allCards.begin(), allCards.end(), back_inserter(guilds),
         [](const CardType& c){ return c.getColor() == Color::PURPLE; });
-    
+
     std::random_shuffle(guilds.begin(), guilds.end());
     std::for_each(guilds.begin(), guilds.begin() + numGuilds,
         [&deck](const CardType& ct) { deck[2].push_back(ct.createCard()); });

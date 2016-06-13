@@ -17,7 +17,7 @@ CardType::CardType(const string name,
       chainNames_{chainNames},
       getProduce_{getProduce}
     {
-    
+
 }
 
 Card CardType::createCard() const {

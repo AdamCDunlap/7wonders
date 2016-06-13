@@ -19,7 +19,7 @@ std::vector< std::vector< std::vector<T> > > split(
     //
     // for each in outer
     // add two to new, one with it in the first and one with it in the second
-    
+
     typename std::vector<T>::const_iterator beginPlusOne{begin};
     ++beginPlusOne;
     const std::vector< std::vector< std::vector<T> > > payRest = splitIntoTwo<T>(beginPlusOne, end);
@@ -51,7 +51,7 @@ std::vector< std::vector< std::vector<T> > > splitIntoTwo(
         //
         // for each in outer
         // add two to new, one with it in the first and one with it in the second
-        
+
         typename std::vector<T>::const_iterator beginPlusOne{begin};
         ++beginPlusOne;
         const std::vector< std::vector< std::vector<T> > > payRest = splitIntoTwo<T>(beginPlusOne, end);

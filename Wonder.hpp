@@ -44,7 +44,7 @@ public:
         return produce;
     }
     std::vector<Produce> getProduceFromNext(const Player& p) const { return getProduces_[!sideA_][numCompleted_+1](p); }
-    
+
 private:
     bool sideA_;
     size_t numCompleted_;

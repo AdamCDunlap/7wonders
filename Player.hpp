@@ -42,6 +42,7 @@ public:
     bool isLeftRawCheap() const;
     bool isRightRawCheap() const;
     bool isManufacturedCheap() const;
+    size_t getWonderStagesBuilt() const { return wonder_.getNumCompleted(); };
 private:
 
     const std::string name_;

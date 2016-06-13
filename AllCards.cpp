@@ -671,14 +671,25 @@ std::vector<CardType> AllCards::getAllCards() {
             return ret;
         }
     });
-    cards.push_back(CardType{ // TODO
+    cards.push_back(CardType{
         "Arena",
         3,
         vector<size_t>{3, 5, 7},
         Color::YELLOW,
         vector<Produce>{Produce::ORE, Produce::STONE, Produce::STONE},
         vector<string>{"Dispensary"},
-        vector<Produce>{}
+        [](const Player& p) {
+            size_t stages = p.getWonderStagesBuilt();
+            vector<Produce> ret(4*stages);
+            for (size_t i=0; i<stages; ++i) {
+                ret[i] = Produce::VP;
+                ret[3*i+0+stages] = Produce::COIN;
+                ret[3*i+1+stages] = Produce::COIN;
+                ret[3*i+2+stages] = Produce::COIN;
+            }
+
+            return ret;
+        }
     });
 
 
@@ -823,7 +834,10 @@ std::vector<CardType> AllCards::getAllCards() {
         Color::PURPLE,
         vector<Produce>{Produce::STONE, Produce::STONE, Produce::BRICK, Produce::BRICK, Produce::GLASS},
         vector<string>{},
-        vector<Produce>{}
+        [](const Player& p) {
+            size_t pts = p.getLeftPlayer()->getWonderStagesBuilt() + p.getWonderStagesBuilt() + p.getRightPlayer()->getWonderStagesBuilt();
+            return vector<Produce>(pts, Produce::VP);
+        }
     });
 
     return cards;

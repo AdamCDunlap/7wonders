@@ -51,13 +51,13 @@ std::vector<Wonder> AllWonders::getAllWonders() {
                 size_t most_points = 0;
                 for (const Card& c : p.getLeftPlayer()->getCards()) {
                     if(c.getColor() != Color::PURPLE) continue;
-                    // Assume that every produce is a victory point because we're already assuming this in deciding here
+                    // Assume that every produce is a victory point because that's true for all the current guilds
                     size_t vp = c.getProduce(p).size();
                     if (vp > most_points) most_points = vp;
                 }
                 for (const Card& c : p.getRightPlayer()->getCards()) {
                     if(c.getColor() != Color::PURPLE) continue;
-                    // Assume that every produce is a victory point because we're already assuming this in deciding here
+                    // Assume that every produce is a victory point because that's true for all the current guilds
                     size_t vp = c.getProduce(p).size();
                     if (vp > most_points) most_points = vp;
                 }
